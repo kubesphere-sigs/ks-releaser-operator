@@ -1,0 +1,52 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  annotations:
+    alm-examples: '[]'
+    capabilities: Basic Install
+  name: ks-releaser-operator.v0.0.0
+  namespace: placeholder
+spec:
+  apiservicedefinitions: {}
+  customresourcedefinitions:
+    owned:
+    - description: ReleaserController is the Schema for the releasercontrollers API
+      displayName: Releaser Controller
+      kind: ReleaserController
+      name: releasercontrollers.devops.kubesphere.io
+      version: v1alpha1
+    - description: Releaser is the Schema for the releasercontrollers API
+      displayName: Releaser
+      kind: Releaser
+      name: releasers.devops.kubesphere.io
+      version: v1alpha1
+  description: ks-releaser
+  displayName: ks-releaser
+  icon:
+  - base64data: ""
+    mediatype: ""
+  install:
+    spec:
+      deployments: null
+    strategy: ""
+  installModes:
+  - supported: false
+    type: OwnNamespace
+  - supported: false
+    type: SingleNamespace
+  - supported: false
+    type: MultiNamespace
+  - supported: true
+    type: AllNamespaces
+  keywords:
+  - releaser
+  links:
+  - name: Ks Releaser Operator
+    url: https://ks-releaser-operator.domain
+  maintainers:
+  - email: linuxsuren@gmail.com
+    name: rick
+  maturity: alpha
+  provider:
+    name: KubeSphere
+  version: 0.0.0

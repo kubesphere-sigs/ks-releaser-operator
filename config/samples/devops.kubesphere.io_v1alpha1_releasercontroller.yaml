@@ -1,0 +1,8 @@
+apiVersion: devops.kubesphere.io/v1alpha1
+kind: ReleaserController
+metadata:
+  name: releasercontroller-sample
+spec:
+  image: "ghcr.io/kubesphere-sigs/ks-releaser"
+  version: "v0.0.13"
+  webhook: false

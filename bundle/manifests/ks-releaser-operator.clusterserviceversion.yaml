@@ -1,0 +1,243 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  annotations:
+    alm-examples: |-
+      [
+        {
+          "apiVersion": "devops.kubesphere.io/v1alpha1",
+          "kind": "ReleaserController",
+          "metadata": {
+            "name": "releasercontroller-sample"
+          },
+          "spec": {
+            "image": "ghcr.io/kubesphere-sigs/ks-releaser",
+            "version": "v0.0.13",
+            "webhook": false
+          }
+        }
+      ]
+    capabilities: Basic Install
+    operators.operatorframework.io/builder: operator-sdk-v1.13.0+git
+    operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
+  name: ks-releaser-operator.v0.0.1
+  namespace: placeholder
+spec:
+  apiservicedefinitions: {}
+  customresourcedefinitions:
+    owned:
+    - description: ReleaserController is the Schema for the releasercontrollers API
+      displayName: Releaser Controller
+      kind: ReleaserController
+      name: releasercontrollers.devops.kubesphere.io
+      version: v1alpha1
+    - description: Releaser is the Schema for the releasercontrollers API
+      displayName: Releaser
+      kind: Releaser
+      name: releasers.devops.kubesphere.io
+      version: v1alpha1
+  description: ks-releaser
+  displayName: ks-releaser
+  icon:
+  - base64data: ""
+    mediatype: ""
+  install:
+    spec:
+      clusterPermissions:
+      - rules:
+        - apiGroups:
+          - ""
+          resources:
+          - configmaps
+          - endpoints
+          - events
+          - namespaces
+          - pods
+          - secrets
+          - serviceaccounts
+          - services
+          - services/finalizers
+          verbs:
+          - '*'
+        - apiGroups:
+          - apps
+          resources:
+          - deployments
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - ""
+          resources:
+          - pods
+          verbs:
+          - get
+          - list
+        - apiGroups:
+          - devops.kubesphere.io
+          resources:
+          - releasercontrollers
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - devops.kubesphere.io
+          resources:
+          - releasercontrollers/finalizers
+          verbs:
+          - update
+        - apiGroups:
+          - devops.kubesphere.io
+          resources:
+          - releasercontrollers/status
+          verbs:
+          - get
+          - patch
+          - update
+        - apiGroups:
+          - rbac.authorization.k8s.io
+          resources:
+          - clusterrolebindings
+          - clusterroles
+          - rolebindings
+          - roles
+          verbs:
+          - '*'
+        - apiGroups:
+          - authentication.k8s.io
+          resources:
+          - tokenreviews
+          verbs:
+          - create
+        - apiGroups:
+          - authorization.k8s.io
+          resources:
+          - subjectaccessreviews
+          verbs:
+          - create
+        serviceAccountName: ks-releaser-operator-controller-manager
+      deployments:
+      - name: ks-releaser-operator-controller-manager
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              control-plane: controller-manager
+          strategy: {}
+          template:
+            metadata:
+              labels:
+                control-plane: controller-manager
+            spec:
+              containers:
+              - args:
+                - --secure-listen-address=0.0.0.0:8443
+                - --upstream=http://127.0.0.1:8080/
+                - --logtostderr=true
+                - --v=10
+                image: gcr.io/kubebuilder/kube-rbac-proxy:v0.8.0
+                name: kube-rbac-proxy
+                ports:
+                - containerPort: 8443
+                  name: https
+                  protocol: TCP
+                resources: {}
+              - args:
+                - --health-probe-bind-address=:8081
+                - --metrics-bind-address=127.0.0.1:8080
+                - --leader-elect
+                command:
+                - /manager
+                image: surenpi/ks-releaser-operator:0.0.1
+                livenessProbe:
+                  httpGet:
+                    path: /healthz
+                    port: 8081
+                  initialDelaySeconds: 15
+                  periodSeconds: 20
+                name: manager
+                readinessProbe:
+                  httpGet:
+                    path: /readyz
+                    port: 8081
+                  initialDelaySeconds: 5
+                  periodSeconds: 10
+                resources:
+                  limits:
+                    cpu: 200m
+                    memory: 100Mi
+                  requests:
+                    cpu: 100m
+                    memory: 20Mi
+                securityContext:
+                  allowPrivilegeEscalation: false
+              securityContext:
+                runAsNonRoot: true
+              serviceAccountName: ks-releaser-operator-controller-manager
+              terminationGracePeriodSeconds: 10
+      permissions:
+      - rules:
+        - apiGroups:
+          - ""
+          resources:
+          - configmaps
+          verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        - apiGroups:
+          - coordination.k8s.io
+          resources:
+          - leases
+          verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        - apiGroups:
+          - ""
+          resources:
+          - events
+          verbs:
+          - create
+          - patch
+        serviceAccountName: ks-releaser-operator-controller-manager
+    strategy: deployment
+  installModes:
+  - supported: false
+    type: OwnNamespace
+  - supported: false
+    type: SingleNamespace
+  - supported: false
+    type: MultiNamespace
+  - supported: true
+    type: AllNamespaces
+  keywords:
+  - releaser
+  links:
+  - name: Ks Releaser Operator
+    url: https://ks-releaser-operator.domain
+  maintainers:
+  - email: linuxsuren@gmail.com
+    name: rick
+  maturity: alpha
+  provider:
+    name: KubeSphere
+  version: 0.0.1

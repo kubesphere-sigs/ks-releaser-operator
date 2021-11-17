@@ -1,0 +1,19 @@
+domain: devops.kubesphere.io
+layout:
+- go.kubebuilder.io/v3
+plugins:
+  manifests.sdk.operatorframework.io/v2: {}
+  scorecard.sdk.operatorframework.io/v2: {}
+projectName: ks-releaser-operator
+repo: github.com/kubesphere-sigs/ks-releaser-operator
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: devops.kubesphere.io
+  group: devops.kubesphere.io
+  kind: ReleaserController
+  path: github.com/kubesphere-sigs/ks-releaser-operator/api/v1alpha1
+  version: v1alpha1
+version: "3"

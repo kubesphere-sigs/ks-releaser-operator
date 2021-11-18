@@ -24,3 +24,5 @@ testbin/*
 *.swo
 *~
 cache/
+deploy/
+bundle_*/

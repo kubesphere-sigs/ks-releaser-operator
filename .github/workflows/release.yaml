@@ -1,0 +1,25 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  goreleaser:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.4
+      - name: Unshallow
+        run: git fetch --prune --unshallow
+      - name: Set up Go
+        uses: actions/setup-go@v2.1.4
+        with:
+          go-version: 1.16.x
+      - name: Image Registry Login
+        run: |
+          docker login ghcr.io --username linuxsuren --password ${{secrets.GH_PUBLISH_SECRETS}}
+      - name: Publish images
+        run: |
+          make docker-build docker-push bundle bundle-build bundle-push VERSION=${{ github.ref_name }}

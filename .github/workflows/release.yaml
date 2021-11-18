@@ -22,4 +22,8 @@ jobs:
           docker login ghcr.io --username linuxsuren --password ${{secrets.GH_PUBLISH_SECRETS}}
       - name: Publish images
         run: |
+          curl -L https://github.com/linuxsuren/http-downloader/releases/latest/download/hd-linux-amd64.tar.gz | tar xzv
+          sudo mv hd /usr/bin/hd
+          hd install operator-sdk
+
           make docker-build docker-push bundle bundle-build bundle-push VERSION=${{ github.ref_name }}

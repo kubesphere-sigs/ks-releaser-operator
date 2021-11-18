@@ -26,4 +26,4 @@ jobs:
           sudo mv hd /usr/bin/hd
           hd install operator-sdk
 
-          make docker-build docker-push bundle bundle-build bundle-push VERSION=${{ github.ref_name }}
+          make docker-build docker-push bundle bundle-build bundle-push TAG=${{ github.ref_name }}

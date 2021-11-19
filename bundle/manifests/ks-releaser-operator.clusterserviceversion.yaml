@@ -158,7 +158,7 @@ spec:
                 - --leader-elect
                 command:
                 - /manager
-                image: ghcr.io/kubesphere-sigs/ks-releaser-operator:0.0.1
+                image: ghcr.io/kubesphere-sigs/ks-releaser-operator:v0.0.1
                 livenessProbe:
                   httpGet:
                     path: /healthz

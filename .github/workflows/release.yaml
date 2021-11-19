@@ -27,3 +27,10 @@ jobs:
           hd install operator-sdk
 
           make docker-build docker-push bundle bundle-build bundle-push TAG=${{ github.ref_name }}
+      - name: Publish install.yaml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PUBLISH_SECRETS }}
+        run: |
+          hd install kubernetes-sigs/kustomize@kustomize/v3.8.7
+          ./hack/generate-install-yaml.sh -t ${{ github.ref_name }}
+          gh release upload ${{ github.ref_name }} tmp/install.yaml
